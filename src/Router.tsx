@@ -6,6 +6,7 @@ const Router = () => {
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
         <Route path="/checkin" element={<Checkin />}></Route>
+        <Route path="/" element={<Navigate to="/checkin" replace />} />
       </Routes>
     </BrowserRouter>
   );
