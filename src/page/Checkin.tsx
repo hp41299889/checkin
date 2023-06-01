@@ -25,9 +25,15 @@ interface Signup {
   session: Session;
 }
 
+interface FormValues {
+  id: string;
+}
+
+const { useForm } = Form;
 const { Text, Title } = Typography;
 
 const Checkin: React.FC = () => {
+  const [form] = useForm();
   const [showCheckinModal, setShowCheckinModal] = useState<boolean>(false);
   const [showDoubleCheckModal, setShowDoubleCheckModal] =
     useState<boolean>(false);
@@ -37,19 +43,25 @@ const Checkin: React.FC = () => {
     setShowCheckinModal(true);
   }, []);
 
-  const onFormSubmit = (values: any) => {
+  const onFormSubmit = (values: FormValues) => {
     getCheckin(values.id)
       .then((res) => {
         if (res.data.status === "success") {
-          if (res.data.data.isVerified) {
-            setSignup(res.data.data);
-            setShowDoubleCheckModal(true);
-          } else {
+          if (!res.data.data.isVerified) {
             Modal.error({
               title: "報到失敗",
               content: "此員編尚未完成信件驗證",
               okText: "確認",
             });
+          } else if (res.data.data.isCheckin) {
+            Modal.error({
+              title: "報到失敗",
+              content: "此員編已完成報到",
+              okText: "確認",
+            });
+          } else {
+            setSignup(res.data.data);
+            setShowDoubleCheckModal(true);
           }
         }
       })
@@ -62,11 +74,13 @@ const Checkin: React.FC = () => {
     if (signup) {
       patchCheckinById(signup.id)
         .then((res) => {
-          console.log(res);
           Modal.success({
             title: "報到完成",
             content: "恭喜你！已經報到完成！",
             okText: "確認",
+            onOk: () => {
+              setShowDoubleCheckModal(false);
+            },
           });
         })
         .catch((err) => {
@@ -82,8 +96,9 @@ const Checkin: React.FC = () => {
         title="報到表單"
         okText="確認"
         cancelText="取消"
+        onOk={form.submit}
       >
-        <Form onFinish={onFormSubmit}>
+        <Form form={form} onFinish={onFormSubmit}>
           <Form.Item name="id" label="員編：">
             <Input />
           </Form.Item>
@@ -99,13 +114,27 @@ const Checkin: React.FC = () => {
         {signup && (
           <>
             <Title>參加場次：{signup.session.name}</Title>
-            <Text>員編：{signup.id}</Text>
-            <Text>姓名：{signup.name}</Text>
-            <Text>電話號碼：{signup.phoneNumber}</Text>
-            <Text>Email：{signup.email}</Text>
-            <Text>參加人數：{signup.joinNumber}</Text>
-            <Text>是否停車：{signup.isParking}</Text>
-            <Text>是否接駁：{signup.isShuttle}</Text>
+            <p>
+              <Text>員編：{signup.id}</Text>
+            </p>
+            <p>
+              <Text>姓名：{signup.name}</Text>
+            </p>
+            <p>
+              <Text>電話號碼：{signup.phoneNumber}</Text>
+            </p>
+            <p>
+              <Text>Email：{signup.email}</Text>
+            </p>
+            <p>
+              <Text>參加人數：{signup.joinNumber}</Text>
+            </p>
+            <p>
+              <Text>是否停車：{signup.isParking ? "是" : "否"}</Text>
+            </p>
+            <p>
+              <Text>是否接駁：{signup.isShuttle ? "是" : "否"}</Text>
+            </p>
           </>
         )}
       </Modal>
