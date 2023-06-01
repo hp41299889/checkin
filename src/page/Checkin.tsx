@@ -77,7 +77,12 @@ const Checkin: React.FC = () => {
 
   return (
     <>
-      <Modal open={showCheckinModal} title="報到表單">
+      <Modal
+        open={showCheckinModal}
+        title="報到表單"
+        okText="確認"
+        cancelText="取消"
+      >
         <Form onFinish={onFormSubmit}>
           <Form.Item name="id" label="員編：">
             <Input />
