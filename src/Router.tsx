@@ -5,8 +5,8 @@ const Router = () => {
   return (
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Routes>
-        <Route path="/checkin" element={<Checkin />}></Route>
-        <Route path="/" element={<Navigate to="/checkin" replace />} />
+        <Route path="/comfirm/:id" element={<Checkin />}></Route>
+        <Route path="/" element={<Navigate to="/comfirm" replace />} />
       </Routes>
     </BrowserRouter>
   );
