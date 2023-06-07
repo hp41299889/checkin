@@ -125,11 +125,12 @@ const Checkin: React.FC = () => {
             </>
           }
           okText="確認"
-          cancelText="取消"
+          cancelText="重置"
           onOk={form.submit}
           onCancel={() => {
             form.resetFields();
           }}
+          closeIcon={false}
         >
           <Form form={form} onFinish={onFormSubmit}>
             <Form.Item name="id" label="員編：">
